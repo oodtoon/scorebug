@@ -1,6 +1,7 @@
 import Box from "@mui/material/Box";
 import Countdown from "./Countdown";
 import OutsBallsAndStrikes from "./Outs";
+import Downs from "./Downs";
 
 const Scoreboard = ({
   scorebug,
@@ -10,7 +11,8 @@ const Scoreboard = ({
   isPaused,
   outs,
   strikes,
-  balls
+  balls,
+  down,
 }) => {
   return (
     <div style={{ width: "50%" }}>
@@ -57,13 +59,17 @@ const Scoreboard = ({
             {playPeriod}
           </Box>
           <Box sx={{ bgcolor: "white", color: "black", p: 2 }}>
-            {/*<CountdownTimer periodLength={periodLength} />*/}
-            {scorebug.sport !== "Baseball" && (
-              <Countdown scorebug={scorebug} isPaused={isPaused} />
+            <Countdown periodLength={scorebug.periodLength} isPaused={isPaused}/>
+            {scorebug.sport === "Baseball" && (
+              <OutsBallsAndStrikes
+                outs={outs}
+                balls={balls}
+                strikes={strikes}
+              />
             )}
-            {scorebug.sport === "Baseball" && <OutsBallsAndStrikes outs={outs} balls={balls} strikes={strikes}/>}
           </Box>
         </Box>
+        <Downs down={down}/>
       </Box>
     </div>
   );

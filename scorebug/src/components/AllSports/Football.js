@@ -1,6 +1,6 @@
 import { Button } from "@mui/material";
 
-const FootBallButtons = ({ handleAddPoints }) => {
+const FootBallButtons = ({ handleAddPoints, handleNextDown, handleFirstDown }) => {
   return (
     <>
       <Button
@@ -34,6 +34,22 @@ const FootBallButtons = ({ handleAddPoints }) => {
         value={2}
       >
         2 Point Conversion / Saftey
+      </Button>
+      <Button
+        variant="contained"
+        onClick={handleFirstDown}
+        sx={{ mr: "10px" }}
+      
+      >
+        First Down
+      </Button>
+      <Button
+        variant="contained"
+        onClick={handleNextDown}
+        sx={{ mr: "50px" }}
+        
+      >
+        Next Down
       </Button>
     </>
   );

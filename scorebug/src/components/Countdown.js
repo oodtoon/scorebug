@@ -1,43 +1,35 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect } from "react"
 
-const Countdown = ({ scorebug, isPaused }) => {
-  const [min, setMin] = useState(scorebug.periodLength);
-  const [sec, setSec] = useState(0);
-  const [timeLeft, setTimeLeft] = useState(scorebug.periodLength * 60);
-  const [timer, setTimer] = useState("");
+const Countdown = ({ isPaused, periodLength }) => {
+  const [timeLeft, setTimeLeft] = useState(0);
+  console.log("top of CountdownTimer:", { timeLeft, periodLength });
 
-  const formatTime = (t) => (t < 10 ? "0" + t : t);
+  const formatMinute = (t) =>
+    Math.floor(t / 60)
+      .toString()
+      .padStart(2, "0");
+  const formatSecond = (t) => (t % 60).toString().padStart(2, "0");
 
-  const decrement = () => {
-    clearInterval(timer);
-    const timerId = setInterval(() => {
-      const m = Math.floor(timeLeft / 60);
-      const s = timeLeft - m * 60;
+  useEffect(() => {
+    setTimeLeft(periodLength * 60);
+  }, [periodLength]);
 
-      setMin(m);
-      setSec(s);
-      if (m <= 0 && s <= 0) return () => clearInterval(timerId);
-      timeLeft((t) => t - 1);
-    }, 1000);
-
-    setTimer(timerId);
-  };
-
-  const pause = () => {
-    clearInterval(timer);
-  };
-
-  if (!isPaused) {
-    decrement();
-  } else {
-    pause();
-  }
+  useEffect(() => {
+    if (!isPaused && timeLeft !== 0) {
+      setTimeout(() => {
+        setTimeLeft((t) => t - 1);
+        console.log(timeLeft);
+      }, 1000);
+    }
+    return;
+  }, [isPaused, timeLeft]);
 
   return (
     <>
-      <span>{formatTime(min)}</span> : <span>{formatTime(sec)}</span>
+      <span>{formatMinute(timeLeft)}</span> :{" "}
+      <span>{formatSecond(timeLeft)}</span>
     </>
   );
 };
 
-export default Countdown;
+export default Countdown

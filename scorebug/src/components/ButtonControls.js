@@ -18,13 +18,15 @@ const ButtonControls = ({
   handleStrike,
   handleBall,
   handleOut,
+  handleNextDown,
+  handleFirstDown
 }) => {
   console.log(scorebug.sport);
 
   return (
     <>
       {scorebug.sport === "Football" && (
-        <FootBallButtons handleAddPoints={handleAddPoints} />
+        <FootBallButtons handleAddPoints={handleAddPoints} handleNextDown={handleNextDown} handleFirstDown={handleFirstDown}/>
       )}
       {scorebug.sport === "Basketball" && (
         <BasketballButtons handleAddPoints={handleAddPoints} />

@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import Scoreboard from "./components/Scoreboard";
 import TeamSelect from "./components/TeamSelect";
 import ButtonControls from "./components/ButtonControls";
@@ -40,6 +40,8 @@ function App() {
   const [balls, setBalls] = useState(0);
   const [strikes, setStrikes] = useState(0);
 
+  const [down, setDown] = useState(1)
+
   const handleHomeTeam = (event) => {
     setHomeTeam(event.target.value);
   };
@@ -71,7 +73,7 @@ function App() {
   };
 
   const handlePeriodLength = (event) => {
-    setPeriodLength(event.target.value);
+    setPeriodLength(+event.target.value);
   };
 
   const handleSetGame = (event) => {
@@ -80,7 +82,7 @@ function App() {
       ...scorebug,
       homeTeam: homeTeam,
       awayTeam: awayTeam,
-      playPeriodType: playPeriodType,
+      playPeriodType: playPeriodType || "Quarter",
       sport: sport,
       periodLength: periodLength,
     });
@@ -167,47 +169,21 @@ function App() {
       setBalls((prev) => prev + 1);
     } else {
       setBalls((prev) => prev - 4);
-      setStrikes(0)
+      setStrikes(0);
     }
   };
 
-  const CountdownTimer = ({ periodLength }) => {
-    let remainingMinutes = periodLength * 60;
-    const [min, setMin] = useState(periodLength);
-    const [sec, setSec] = useState(0);
-    const [timeLeft, setTimeLeft] = useState(remainingMinutes);
+  const handleNextDown = () => {
+    if (down + 1 < 5) {
+      setDown(prev => prev + 1)
+    } else {
+      setDown(1)
+    }
+  }
 
-    const formatTime = (t) => (t < 10 ? "0" + t : t);
-
-    let intervalRef = useRef();
-
-    useEffect(() => {
-      if (!isPaused) {
-        intervalRef.current = setInterval(() => {
-          const m = Math.floor(timeLeft / 60);
-          const s = timeLeft - m * 60;
-
-          setMin(m);
-          setSec(s);
-          if (m <= 0 && s <= 0) return () => clearInterval(intervalRef.current);
-
-          setTimeLeft((t) => t - 1);
-          console.log(timeLeft);
-          console.log(intervalRef.current);
-        }, 1000);
-      } else if (isPaused && timeLeft !== 0) {
-        clearInterval(intervalRef.current);
-        setTimeLeft(timeLeft);
-      }
-      return () => clearInterval(intervalRef.current);
-    }, [isPaused, timeLeft]);
-
-    return (
-      <>
-        <span>{formatTime(min)}</span> : <span>{formatTime(sec)}</span>
-      </>
-    );
-  };
+  const handleFirstDown = () => {
+    setDown(1)
+  }
 
   const handlePause = () => {
     setIsPaused((prev) => !prev);
@@ -217,57 +193,6 @@ function App() {
 
   return (
     <div>
-      {/*<div style={{ width: "50%" }}>
-        <Box
-          sx={{
-            display: "grid",
-            gap: 1,
-            gridTemplateColumns: "repeat(2, 1fr)",
-          }}
-        >
-          <Box
-            sx={{ bgcolor: "error.main", color: "error.contrastText", p: 2 }}
-          >
-            {scorebug.awayTeam}
-          </Box>
-          <Box sx={{ bgcolor: "white", color: "black", p: 2 }}>{awayScore}</Box>
-          <Box
-            sx={{
-              bgcolor: "primary.main",
-              color: "primary.contrastText",
-              p: 2,
-            }}
-          >
-            {scorebug.homeTeam}
-          </Box>
-          <Box
-            sx={{
-              bgcolor: "white",
-              color: "black",
-              p: 2,
-            }}
-          >
-            {homeScore}
-          </Box>
-          <Box
-            sx={{
-              display: "grid",
-              gap: 1,
-              gridTemplateColumns: "repeat(3, 1fr)",
-            }}
-          >
-            <Box sx={{ bgcolor: "white", color: "black", p: 2 }}>
-              {scorebug.playPeriodType}
-            </Box>
-            <Box sx={{ bgcolor: "white", color: "black", p: 2 }}>
-              {playPeriod}
-            </Box>
-            <Box sx={{ bgcolor: "white", color: "black", p: 2 }}>
-              <CountdownTimer periodLength={scorebug.periodLength} />
-            </Box>
-          </Box>
-        </Box>
-          </div>*/}
       <Scoreboard
         scorebug={scorebug}
         awayScore={awayScore}
@@ -277,6 +202,7 @@ function App() {
         outs={outs}
         balls={balls}
         strikes={strikes}
+        down={down}
       />
       <div className="container">
         <TeamSelect
@@ -295,6 +221,8 @@ function App() {
           handleOut={handleOut}
           handleBall={handleBall}
           handleStrike={handleStrike}
+          handleNextDown={handleNextDown}
+          handleFirstDown={handleFirstDown}
           sport={sport}
         />
         <ScoreForm
