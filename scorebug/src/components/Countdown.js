@@ -18,8 +18,8 @@ const Countdown = ({ isPaused, periodLength, timeLeft, setTimeLeft }) => {
 
   return (
     <>
-      <span>{formatMinute(countdownTimer)}</span> :{" "}
-      <span>{formatSecond(countdownTimer)}</span>
+      <span>{formatMinute(countdownTimer.toFixed(0))}</span> :{" "}
+      <span>{formatSecond(countdownTimer.toFixed(0))}</span>
     </>
   );
 };

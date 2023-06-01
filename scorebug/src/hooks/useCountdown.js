@@ -10,8 +10,8 @@ const useCountdown = (timeLeft, setTimeLeft, time, isPaused) => {
   useEffect(() => {
     if (!isPaused && timeLeft !== 0) {
       timeRef.current = setTimeout(() => {
-        setTimeLeft((t) => t - 1);
-      }, 1000);
+        setTimeLeft((t) => t - .1);
+      }, 100);
       return () => clearTimeout(timeRef.current);
     }
     return;
