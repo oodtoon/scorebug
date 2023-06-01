@@ -1,8 +1,7 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Scoreboard from "./components/Scoreboard";
-import TeamSelect from "./components/TeamSelect";
-import ButtonControls from "./components/ButtonControls";
-import ScoreForm from "./components/ScoreForm";
+import ControlCenter from "./components/ControlCenter";
+import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 import "./App.css";
 
 function App() {
@@ -12,6 +11,8 @@ function App() {
     playPeriodType: "Quarter",
     sport: "",
     periodLength: 0,
+    innings: 9,
+    periods: 3,
   };
 
   const [scorebug, setScorebug] = useState(scoreboardInfo);
@@ -36,11 +37,21 @@ function App() {
 
   const [isPaused, setIsPaused] = useState(true);
 
+  const [timeLeft, setTimeLeft] = useState(0);
+
   const [outs, setOuts] = useState(0);
   const [balls, setBalls] = useState(0);
   const [strikes, setStrikes] = useState(0);
 
-  const [down, setDown] = useState(1)
+  const [down, setDown] = useState(1);
+
+  const [innings, setInnings] = useState(9);
+
+  const [periods, setPeriods] = useState(3);
+
+  const [possesion, setPossesion] = useState("Home Team");
+
+  const [controlsVisible, setControlsVisibl] = useState(true);
 
   const handleHomeTeam = (event) => {
     setHomeTeam(event.target.value);
@@ -72,11 +83,23 @@ function App() {
     setTeamToEdit(event.target.value);
   };
 
+  const handlePossesionChange = (event) => {
+    setPossesion(event.target.value);
+  };
+
   const handlePeriodLength = (event) => {
     setPeriodLength(+event.target.value);
   };
 
   const handleSetGame = (event) => {
+    if (playPeriodType === "") {
+      setPlayPeriodType("Quarter");
+    }
+
+    if (playPeriodType !== "Hockey" && periods === "") {
+      setPeriods(3);
+    }
+
     event.preventDefault();
     setScorebug({
       ...scorebug,
@@ -85,10 +108,15 @@ function App() {
       playPeriodType: playPeriodType || "Quarter",
       sport: sport,
       periodLength: periodLength,
+      innings: innings,
+      periods: periods || 3,
+      football: { possesion: possesion },
     });
     setPlayPeriod(1);
     setAwayScore(0);
     setHomeScore(0);
+    setAwayTeam("Away Team");
+    setHomeTeam("Home Team");
   };
 
   const handlePlayPeriod = (event) => {
@@ -108,17 +136,25 @@ function App() {
       } else {
         setPlayPeriod((prevPeriod) => prevPeriod - 1);
       }
-    } else if (playPeriodType === "Period") {
+    } else if (sport === "Hockey" && playPeriodType === "Period") {
       if (playPeriod + 1 <= 3) {
         setPlayPeriod((prevPeriod) => prevPeriod + 1);
       } else {
         setPlayPeriod((prevPeriod) => prevPeriod - 2);
       }
     } else if (playPeriodType === "Inning") {
-      if (playPeriod + 1 <= 9) {
+      if (playPeriod + 1 <= scorebug.innings) {
         setPlayPeriod((prevPeriod) => prevPeriod + 1);
       } else {
-        setPlayPeriod((prevPeriod) => prevPeriod - 8);
+        setPlayPeriod((prevPeriod) => prevPeriod - (scorebug.innings - 1));
+      }
+    } else if (playPeriodType !== "Hockey" && playPeriodType === "Period") {
+      if (playPeriod < scorebug.periods) {
+        setPlayPeriod((prevPeriod) => prevPeriod + 1);
+      } else if (playPeriod === 1 && scorebug.periods === 1) {
+        setPlayPeriod(1);
+      } else {
+        setPlayPeriod((prevPeriod) => prevPeriod - (scorebug.periods - 1));
       }
     }
   };
@@ -146,7 +182,7 @@ function App() {
     }
   };
 
-  const handleOut = (event) => {
+  const handleOut = () => {
     if (outs + 1 < 4) {
       setOuts((prev) => prev + 1);
     } else {
@@ -156,7 +192,7 @@ function App() {
     setStrikes(0);
   };
 
-  const handleStrike = (event) => {
+  const handleStrike = () => {
     if (strikes + 1 < 4) {
       setStrikes((prev) => prev + 1);
     } else {
@@ -164,7 +200,7 @@ function App() {
     }
   };
 
-  const handleBall = (event) => {
+  const handleBall = () => {
     if (balls + 1 < 5) {
       setBalls((prev) => prev + 1);
     } else {
@@ -175,15 +211,27 @@ function App() {
 
   const handleNextDown = () => {
     if (down + 1 < 5) {
-      setDown(prev => prev + 1)
+      setDown((prev) => prev + 1);
     } else {
-      setDown(1)
+      setDown(1);
     }
-  }
+  };
 
   const handleFirstDown = () => {
-    setDown(1)
-  }
+    setDown(1);
+  };
+
+  const handleInning = (event) => {
+    setInnings(event.target.value);
+  };
+
+  const handlePeriods = (event) => {
+    setPeriods(event.target.value);
+  };
+
+  const handleControlsVisible = () => {
+    setControlsVisibl((prev) => !prev);
+  };
 
   const handlePause = () => {
     setIsPaused((prev) => !prev);
@@ -193,49 +241,88 @@ function App() {
 
   return (
     <div>
-      <Scoreboard
-        scorebug={scorebug}
-        awayScore={awayScore}
-        homeScore={homeScore}
-        playPeriod={playPeriod}
-        isPaused={isPaused}
-        outs={outs}
-        balls={balls}
-        strikes={strikes}
-        down={down}
-      />
-      <div className="container">
-        <TeamSelect
-          teamToEdit={teamToEdit}
-          scorebug={scorebug}
-          handleChange={handleChange}
-        />
-        <ButtonControls
-          scorebug={scorebug}
-          handleAddPoints={handleAddPoints}
-          handleReset={handleReset}
-          handlePause={handlePause}
-          playPause={playPause}
-          handleTotalReset={handleTotalReset}
-          handleNextPeriod={handleNextPeriod}
-          handleOut={handleOut}
-          handleBall={handleBall}
-          handleStrike={handleStrike}
-          handleNextDown={handleNextDown}
-          handleFirstDown={handleFirstDown}
-          sport={sport}
-        />
-        <ScoreForm
-          playPeriodType={playPeriodType}
-          sport={sport}
-          handleSetGame={handleSetGame}
-          handleAwayTeam={handleAwayTeam}
-          handleHomeTeam={handleHomeTeam}
-          handlePlayPeriod={handlePlayPeriod}
-          handlePeriodLength={handlePeriodLength}
-          handleSport={handleSport}
-        />
-      </div>
+      <Router>
+        <Routes>
+          <Route
+            path="/"
+            element={
+              <ControlCenter
+                scorebug={scorebug}
+                awayScore={awayScore}
+                homeScore={homeScore}
+                playPeriod={playPeriod}
+                isPaused={isPaused}
+                outs={outs}
+                balls={balls}
+                strikes={strikes}
+                down={down}
+                teamToEdit={teamToEdit}
+                playPause={playPause}
+                sport={sport}
+                playPeriodType={playPeriodType}
+                possesion={possesion}
+                handleChange={handleChange}
+                handleAddPoints={handleAddPoints}
+                handleReset={handleReset}
+                handlePause={handlePause}
+                handleTotalReset={handleTotalReset}
+                handleNextPeriod={handleNextPeriod}
+                handleOut={handleOut}
+                handleBall={handleBall}
+                handleStrike={handleStrike}
+                handleNextDown={handleNextDown}
+                handleFirstDown={handleFirstDown}
+                handleSetGame={handleSetGame}
+                handleAwayTeam={handleAwayTeam}
+                handleHomeTeam={handleHomeTeam}
+                handlePlayPeriod={handlePlayPeriod}
+                handlePeriodLength={handlePeriodLength}
+                handleSport={handleSport}
+                handleInning={handleInning}
+                handlePeriods={handlePeriods}
+                handlePossesionChange={handlePossesionChange}
+                timeLeft={timeLeft}
+                setTimeLeft={setTimeLeft}
+              />
+            }
+          ></Route>
+
+          <Route
+            path="/scoreboard"
+            element={
+              <Scoreboard
+                scorebug={scorebug}
+                awayScore={awayScore}
+                homeScore={homeScore}
+                playPeriod={playPeriod}
+                isPaused={isPaused}
+                outs={outs}
+                balls={balls}
+                strikes={strikes}
+                down={down}
+                possesion={possesion}
+                timeLeft={timeLeft}
+                setTimeLeft={setTimeLeft}
+              />
+            }
+          ></Route>
+        </Routes>
+        {controlsVisible === true && (
+          <Link
+            to="/scoreboard"
+            className="display-link"
+            onClick={handleControlsVisible}
+          >
+            Display
+          </Link>
+        )}
+
+        {controlsVisible === false && (
+          <Link to="/" onClick={handleControlsVisible}>
+            Controls
+          </Link>
+        )}
+      </Router>
     </div>
   );
 }

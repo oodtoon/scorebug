@@ -13,20 +13,27 @@ const ButtonControls = ({
   handleReset,
   handlePause,
   playPause,
+  possesion,
   handleTotalReset,
   handleNextPeriod,
   handleStrike,
   handleBall,
   handleOut,
   handleNextDown,
-  handleFirstDown
+  handleFirstDown,
+  handlePossesionChange,
 }) => {
-  console.log(scorebug.sport);
-
   return (
     <>
       {scorebug.sport === "Football" && (
-        <FootBallButtons handleAddPoints={handleAddPoints} handleNextDown={handleNextDown} handleFirstDown={handleFirstDown}/>
+        <FootBallButtons
+          scorebug={scorebug}
+          possesion={possesion}
+          handleAddPoints={handleAddPoints}
+          handleNextDown={handleNextDown}
+          handleFirstDown={handleFirstDown}
+          handlePossesionChange={handlePossesionChange}
+        />
       )}
       {scorebug.sport === "Basketball" && (
         <BasketballButtons handleAddPoints={handleAddPoints} />

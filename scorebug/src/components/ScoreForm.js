@@ -5,6 +5,18 @@ import MenuItem from "@mui/material/MenuItem";
 import Select from "@mui/material/Select";
 import GameSelect from "./GameSelect";
 
+const PeriodSelect = ({ playPeriodType, handlePeriods }) => {
+  return (
+    <>
+      {playPeriodType === "Period" && (
+        <span>
+          <TextField label="Period Count" sx={{ mr: "10px" }} onChange={handlePeriods}/>
+        </span>
+      )}
+    </>
+  );
+};
+
 const ScoreForm = ({
   playPeriodType,
   sport,
@@ -14,6 +26,8 @@ const ScoreForm = ({
   handlePlayPeriod,
   handlePeriodLength,
   handleSport,
+  handleInning,
+  handlePeriods,
 }) => {
   return (
     <>
@@ -26,7 +40,7 @@ const ScoreForm = ({
         <TextField
           onChange={handleHomeTeam}
           label="Home Team"
-          sx={{ mr: "50px"  }}
+          sx={{ mr: "50px" }}
         />
         <GameSelect sport={sport} handleSport={handleSport} />
         <FormControl sx={{ minWidth: "300px" }}>
@@ -43,13 +57,24 @@ const ScoreForm = ({
             <MenuItem value={"Inning"}>Inning</MenuItem>
           </Select>
         </FormControl>
+        {sport !== "Hockey" && (
+          <PeriodSelect
+            playPeriodType={playPeriodType}
+            handlePeriods={handlePeriods}
+          />
+        )}
+        {sport !== "Baseball" && (
+          <span className="minutes">
+            <TextField label="Period Length" onChange={handlePeriodLength} /> :
+            minutes
+          </span>
+        )}
+        {sport === "Baseball" && (
+          <TextField label="Inning Count" onChange={handleInning} />
+        )}
 
-        <span className="minutes">
-          <TextField label="Period Length" onChange={handlePeriodLength} /> :
-          minutes
-        </span>
         <div>
-          <Button variant="contained" type="submit" sx={{ mt: "10px" }}>
+          <Button variant="contained" type="submit" sx={{ mt: "10px", mb: "20px" }}>
             Set Game
           </Button>
         </div>

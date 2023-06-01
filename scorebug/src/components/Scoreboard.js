@@ -2,6 +2,11 @@ import Box from "@mui/material/Box";
 import Countdown from "./Countdown";
 import OutsBallsAndStrikes from "./Outs";
 import Downs from "./Downs";
+import SportsFootballIcon from "@mui/icons-material/SportsFootball";
+
+const FootballIcon = () => (
+  <SportsFootballIcon sx={{ mb: "-10px" }}></SportsFootballIcon>
+)
 
 const Scoreboard = ({
   scorebug,
@@ -13,6 +18,9 @@ const Scoreboard = ({
   strikes,
   balls,
   down,
+  possesion,
+  timeLeft,
+  setTimeLeft,
 }) => {
   return (
     <div style={{ width: "50%" }}>
@@ -23,8 +31,9 @@ const Scoreboard = ({
           gridTemplateColumns: "repeat(2, 1fr)",
         }}
       >
-        <Box sx={{ bgcolor: "error.main", color: "error.contrastText", p: 2 }}>
+        <Box sx={{ bgcolor: "error.main", color: "error.contrastText", p: 2, justifyContent: 'space-evenly' }}>
           {scorebug.awayTeam}
+          {scorebug.sport === "Football" && (possesion === "Away Team" ? FootballIcon() : null)}
         </Box>
         <Box sx={{ bgcolor: "white", color: "black", p: 2 }}>{awayScore}</Box>
         <Box
@@ -32,9 +41,11 @@ const Scoreboard = ({
             bgcolor: "primary.main",
             color: "primary.contrastText",
             p: 2,
+            justifyContent: 'space-evenly'
           }}
         >
           {scorebug.homeTeam}
+          {scorebug.sport === "Football" && (possesion === "Home Team" ? FootballIcon() : null)}
         </Box>
         <Box
           sx={{
@@ -59,7 +70,14 @@ const Scoreboard = ({
             {playPeriod}
           </Box>
           <Box sx={{ bgcolor: "white", color: "black", p: 2 }}>
-            <Countdown periodLength={scorebug.periodLength} isPaused={isPaused}/>
+            {scorebug.sport !== "Baseball" && (
+              <Countdown
+                periodLength={scorebug.periodLength}
+                isPaused={isPaused}
+                timeLeft={timeLeft}
+                setTimeLeft={setTimeLeft}
+              />
+            )}
             {scorebug.sport === "Baseball" && (
               <OutsBallsAndStrikes
                 outs={outs}
@@ -69,7 +87,7 @@ const Scoreboard = ({
             )}
           </Box>
         </Box>
-        <Downs down={down}/>
+        {scorebug.sport === "Football" && <Downs down={down} />}
       </Box>
     </div>
   );

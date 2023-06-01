@@ -1,33 +1,25 @@
-import { useState, useEffect } from "react"
+import { useEffect } from "react"
+import useCountdown from "../hooks/useCountdown";
 
-const Countdown = ({ isPaused, periodLength }) => {
-  const [timeLeft, setTimeLeft] = useState(0);
-  console.log("top of CountdownTimer:", { timeLeft, periodLength });
+const Countdown = ({ isPaused, periodLength, timeLeft, setTimeLeft }) => {
 
+
+  const countdownTimer = useCountdown(timeLeft, setTimeLeft, periodLength, isPaused)
+
+  useEffect(() => {
+    setTimeLeft(countdownTimer)
+  }, [countdownTimer])
+ 
   const formatMinute = (t) =>
     Math.floor(t / 60)
       .toString()
       .padStart(2, "0");
   const formatSecond = (t) => (t % 60).toString().padStart(2, "0");
 
-  useEffect(() => {
-    setTimeLeft(periodLength * 60);
-  }, [periodLength]);
-
-  useEffect(() => {
-    if (!isPaused && timeLeft !== 0) {
-      setTimeout(() => {
-        setTimeLeft((t) => t - 1);
-        console.log(timeLeft);
-      }, 1000);
-    }
-    return;
-  }, [isPaused, timeLeft]);
-
   return (
     <>
-      <span>{formatMinute(timeLeft)}</span> :{" "}
-      <span>{formatSecond(timeLeft)}</span>
+      <span>{formatMinute(countdownTimer)}</span> :{" "}
+      <span>{formatSecond(countdownTimer)}</span>
     </>
   );
 };
