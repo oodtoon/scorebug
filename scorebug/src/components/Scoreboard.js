@@ -34,23 +34,23 @@ const Scoreboard = ({
         sx={{
           display: "grid",
           gap: 1,
-          gridTemplateColumns: "2fr 1fr 1fr",
+          gridTemplateColumns: ".5fr 2fr 1fr 1fr",
         }}
       >
+        <Box></Box>
         <Box
           sx={{
-            bgcolor: "error.main",
-            color: "error.contrastText",
+            bgcolor: `#${scorebug.awayColor}`,
+            color: `#${scorebug.awayText}`,
             p: 2,
-            justifyContent: "space-evenly",
           }}
         >
           {scorebug.awayTeam}
         </Box>
         <Box
           sx={{
-            bgcolor: "error.main",
-            color: "error.contrastText",
+            bgcolor: `#${scorebug.awayColor}`,
+            color: `#${scorebug.awayText}`,
             p: 2,
             justifyContent: "space-evenly",
             ml: "-10px",
@@ -60,10 +60,11 @@ const Scoreboard = ({
             (possesion === "Away Team" ? FootballIcon() : null)}
         </Box>
         <Box sx={{ bgcolor: "white", color: "black", p: 2 }}>{awayScore}</Box>
+        <Box></Box>
         <Box
           sx={{
-            bgcolor: "primary.main",
-            color: "primary.contrastText",
+            bgcolor: `#${scorebug.homeColor}`,
+            color: `#${scorebug.homeText}`,
             p: 2,
             justifyContent: "space-evenly",
           }}
@@ -72,8 +73,8 @@ const Scoreboard = ({
         </Box>
         <Box
           sx={{
-            bgcolor: "primary.main",
-            color: "primary.contrastText",
+            bgcolor: `#${scorebug.homeColor}`,
+            color: `#${scorebug.homeText}`,
             p: 2,
             justifyContent: "space-evenly",
             ml: "-10px",
@@ -91,6 +92,7 @@ const Scoreboard = ({
         >
           {homeScore}
         </Box>
+        <Box></Box>
         <Box
           sx={{
             display: "grid",
@@ -98,7 +100,9 @@ const Scoreboard = ({
             gridTemplateColumns: "repeat(3, 1fr)",
           }}
         >
-          <Box sx={{ bgcolor: "white", color: "black", p: 2, borderRadius: "8px" }}>
+          <Box
+            sx={{ bgcolor: "white", color: "black", p: 2, borderRadius: "8px" }}
+          >
             {scorebug.playPeriodType}
           </Box>
           <Box sx={{ bgcolor: "white", color: "black", p: 2 }}>

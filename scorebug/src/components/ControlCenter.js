@@ -44,7 +44,11 @@ const ControlCenter = ({
   timeLeft,
   setTimeLeft,
   handlePoolType,
-  handleControlsVisible
+  handleControlsVisible,
+  handleAwayColor,
+  handleAwayText,
+  handleHomeColor,
+  handleHomeText
 }) => {
   return (
     <>
@@ -105,6 +109,10 @@ const ControlCenter = ({
             handleInning={handleInning}
             handlePeriods={handlePeriods}
             handlePoolType={handlePoolType}
+            handleAwayColor={handleAwayColor}
+            handleAwayText={handleAwayText}
+            handleHomeColor={handleHomeColor}
+            handleHomeText={handleHomeText}
           />
         </div>
       </div>

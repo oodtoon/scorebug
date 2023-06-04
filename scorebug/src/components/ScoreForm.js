@@ -4,6 +4,7 @@ import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import Select from "@mui/material/Select";
 import GameSelect from "./GameSelect";
+import { ColorPicker } from "primereact/colorpicker";
 import "../App.css";
 
 const PeriodSelect = ({ playPeriodType, handlePeriods }) => {
@@ -34,20 +35,55 @@ const ScoreForm = ({
   handleInning,
   handlePeriods,
   handlePoolType,
+  handleAwayColor,
+  handleHomeColor,
+  homeColor,
+  awayColor,
+  handleAwayText,
+  handleHomeText
 }) => {
   return (
     <>
       <form onSubmit={handleSetGame} className="score-form">
         <div className="team-names">
+          <div className="away-team-color">
+            <ColorPicker
+              value={awayColor}
+              onChange={handleAwayColor}
+              defaultColor="d32f2f"
+            />
+            <ColorPicker
+              value={awayColor}
+              onChange={handleAwayText}
+              defaultColor="FFFFFF"
+              className="text"
+            />
+          </div>
+
+          <div className="home-team-color">
+            <ColorPicker
+              value={homeColor}
+              onChange={handleHomeColor}
+              defaultColor="1976d2"
+            />
+            <ColorPicker
+              value={awayColor}
+              onChange={handleHomeText}
+              defaultColor="FFFFFF"
+              className="text"
+            />
+          </div>
           <TextField
+            className="away-team-name"
             onChange={handleAwayTeam}
             label="Away Team"
-            sx={{ mr: "10px" }}
+            sx={{ mr: "10px", mt: "10px" }}
           />
           <TextField
+            className="home-team-name"
             onChange={handleHomeTeam}
             label="Home Team"
-            sx={{ mr: "50px" }}
+            sx={{ mt: "10px" }}
           />
         </div>
         <div className="game-info">

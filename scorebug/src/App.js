@@ -1,13 +1,18 @@
 import { useState } from "react";
 import DisplayScoreboard from "./components/routes/DisplayScoreboard";
 import ControlCenter from "./components/ControlCenter";
-import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import "primereact/resources/primereact.min.css";
 import "./App.css";
 
 function App() {
   let scoreboardInfo = {
     homeTeam: "Home Team",
+    homeColor: "1976d2",
+    homeText: "FFFFFF",
     awayTeam: "Away Team",
+    awayColor: "d32f2f",
+    awayText: "FFFFFF",
     playPeriodType: "Quarter",
     sport: "",
     periodLength: 15,
@@ -19,10 +24,14 @@ function App() {
   const [scorebug, setScorebug] = useState(scoreboardInfo);
 
   const [awayScore, setAwayScore] = useState(0);
-  const [homeScore, setHomeScore] = useState(0);
-
-  const [homeTeam, setHomeTeam] = useState("Home Team");
   const [awayTeam, setAwayTeam] = useState("Away Team");
+  const [awayColor, setAwayColor] = useState("d32f2f");
+  const [awayText, setAwayText] = useState("FFFFFF");
+
+  const [homeScore, setHomeScore] = useState(0);
+  const [homeTeam, setHomeTeam] = useState("Home Team");
+  const [homeColor, setHomeColor] = useState("1976d2");
+  const [homeText, setHomeText] = useState("FFFFFF");
 
   const [teamToEdit, setTeamToEdit] = useState("Home Team");
 
@@ -71,6 +80,9 @@ function App() {
     } else {
       setAwayScore((prevScore) => prevScore + pointsToAdd);
     }
+    if (scorebug.sport === "Pool") {
+      setPlayPeriod(0);
+    }
   };
 
   const handleReset = () => {
@@ -107,7 +119,11 @@ function App() {
     setScorebug({
       ...scorebug,
       homeTeam: homeTeam,
+      homeColor: homeColor,
+      homeText: homeText,
       awayTeam: awayTeam,
+      awayColor: awayColor,
+      awayText: awayText,
       playPeriodType: playPeriodType || "Quarter",
       sport: sport,
       periodLength: periodLength || "15",
@@ -259,6 +275,22 @@ function App() {
 
   const playPause = isPaused ? "Play" : "Pause";
 
+  const handleAwayColor = (color) => {
+    setAwayColor(color.value);
+  };
+
+  const handleHomeColor = (color) => {
+    setHomeColor(color.value);
+  };
+
+  const handleAwayText = (color) => {
+    setAwayText(color.value);
+  };
+
+  const handleHomeText = (color) => {
+    setHomeText(color.value);
+  };
+
   return (
     <div>
       <Router>
@@ -283,6 +315,10 @@ function App() {
                 possesion={possesion}
                 timeLeft={timeLeft}
                 controlsVisible={controlsVisible}
+                awayColor={awayColor}
+                awayText={awayText}
+                homeColor={homeColor}
+                homeText={homeText}
                 handleChange={handleChange}
                 handleAddPoints={handleAddPoints}
                 handleReset={handleReset}
@@ -306,6 +342,10 @@ function App() {
                 handlePoolType={handlePoolType}
                 setTimeLeft={setTimeLeft}
                 handleControlsVisible={handleControlsVisible}
+                handleAwayColor={handleAwayColor}
+                handleAwayText={handleAwayText}
+                handleHomeColor={handleHomeColor}
+                handleHomeText={handleHomeText}
               />
             }
           ></Route>

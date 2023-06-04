@@ -55,7 +55,31 @@
 }
 
 .team-names {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: auto;
+  grid-template-areas: "away-color  home-color" "away home";
   margin-bottom: 30px;
+}
+
+.away-team-name {
+  grid-area: away;
+}
+
+.away-team-color {
+  grid-area: away-color;
+}
+
+.home-team-name {
+  grid-area: home;
+}
+
+.home-team-color {
+  grid-area: home-color;
+}
+
+.text {
+  margin-left: 10px;
 }
 
 .game-info {
@@ -92,7 +116,13 @@
   box-shadow: 0px 0px 40px 20px rgb(179, 3, 35);
   background-color: white;
   border-radius: 8px;
+  font-size: 25px;
+  font-weight: 600;
 }
+
+
+
+
 
 .display-link {
   display: grid;
