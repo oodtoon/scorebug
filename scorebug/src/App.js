@@ -1,5 +1,5 @@
 import { useState } from "react";
-import Scoreboard from "./components/Scoreboard";
+import DisplayScoreboard from "./components/routes/DisplayScoreboard";
 import ControlCenter from "./components/ControlCenter";
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 import "./App.css";
@@ -10,9 +10,10 @@ function App() {
     awayTeam: "Away Team",
     playPeriodType: "Quarter",
     sport: "",
-    periodLength: 0,
+    periodLength: 15,
     innings: 9,
     periods: 3,
+    poolType: "",
   };
 
   const [scorebug, setScorebug] = useState(scoreboardInfo);
@@ -52,6 +53,8 @@ function App() {
   const [possesion, setPossesion] = useState("Home Team");
 
   const [controlsVisible, setControlsVisibl] = useState(true);
+
+  const [poolType, setPoolType] = useState("");
 
   const handleHomeTeam = (event) => {
     setHomeTeam(event.target.value);
@@ -107,10 +110,11 @@ function App() {
       awayTeam: awayTeam,
       playPeriodType: playPeriodType || "Quarter",
       sport: sport,
-      periodLength: periodLength,
+      periodLength: periodLength || "15",
       innings: innings,
       periods: periods || 3,
       football: { possesion: possesion },
+      poolType: poolType || "8 Ball",
     });
     setPlayPeriod(1);
     setAwayScore(0);
@@ -127,34 +131,45 @@ function App() {
     if (playPeriodType === "Quarter") {
       if (playPeriod + 1 <= 4) {
         setPlayPeriod((prevPeriod) => prevPeriod + 1);
+        setPeriodLength(scorebug.periodLength);
       } else {
         setPlayPeriod((prevPeriod) => prevPeriod - 3);
+        setPeriodLength(scorebug.periodLength);
       }
     } else if (playPeriodType === "Half") {
       if (playPeriod + 1 <= 2) {
         setPlayPeriod((prevPeriod) => prevPeriod + 1);
+        setPeriodLength(scorebug.periodLength);
       } else {
         setPlayPeriod((prevPeriod) => prevPeriod - 1);
+        setPeriodLength(scorebug.periodLength);
       }
     } else if (sport === "Hockey" && playPeriodType === "Period") {
       if (playPeriod + 1 <= 3) {
         setPlayPeriod((prevPeriod) => prevPeriod + 1);
+        setPeriodLength(scorebug.periodLength);
       } else {
         setPlayPeriod((prevPeriod) => prevPeriod - 2);
+        setPeriodLength(scorebug.periodLength);
       }
     } else if (playPeriodType === "Inning") {
       if (playPeriod + 1 <= scorebug.innings) {
         setPlayPeriod((prevPeriod) => prevPeriod + 1);
+        setPeriodLength(scorebug.periodLength);
       } else {
         setPlayPeriod((prevPeriod) => prevPeriod - (scorebug.innings - 1));
+        setPeriodLength(scorebug.periodLength);
       }
     } else if (playPeriodType !== "Hockey" && playPeriodType === "Period") {
       if (playPeriod < scorebug.periods) {
         setPlayPeriod((prevPeriod) => prevPeriod + 1);
+        setPeriodLength(scorebug.periodLength);
       } else if (playPeriod === 1 && scorebug.periods === 1) {
         setPlayPeriod(1);
+        setPeriodLength(scorebug.periodLength);
       } else {
         setPlayPeriod((prevPeriod) => prevPeriod - (scorebug.periods - 1));
+        setPeriodLength(scorebug.periodLength);
       }
     }
   };
@@ -197,6 +212,7 @@ function App() {
       setStrikes((prev) => prev + 1);
     } else {
       setStrikes((prev) => prev - 3);
+      handleOut();
     }
   };
 
@@ -227,6 +243,10 @@ function App() {
 
   const handlePeriods = (event) => {
     setPeriods(event.target.value);
+  };
+
+  const handlePoolType = (event) => {
+    setPoolType(event.target.value);
   };
 
   const handleControlsVisible = () => {
@@ -261,6 +281,8 @@ function App() {
                 sport={sport}
                 playPeriodType={playPeriodType}
                 possesion={possesion}
+                timeLeft={timeLeft}
+                controlsVisible={controlsVisible}
                 handleChange={handleChange}
                 handleAddPoints={handleAddPoints}
                 handleReset={handleReset}
@@ -281,8 +303,9 @@ function App() {
                 handleInning={handleInning}
                 handlePeriods={handlePeriods}
                 handlePossesionChange={handlePossesionChange}
-                timeLeft={timeLeft}
+                handlePoolType={handlePoolType}
                 setTimeLeft={setTimeLeft}
+                handleControlsVisible={handleControlsVisible}
               />
             }
           ></Route>
@@ -290,7 +313,7 @@ function App() {
           <Route
             path="/scoreboard"
             element={
-              <Scoreboard
+              <DisplayScoreboard
                 scorebug={scorebug}
                 awayScore={awayScore}
                 homeScore={homeScore}
@@ -302,26 +325,13 @@ function App() {
                 down={down}
                 possesion={possesion}
                 timeLeft={timeLeft}
+                controlsVisible={controlsVisible}
                 setTimeLeft={setTimeLeft}
+                handleControlsVisible={handleControlsVisible}
               />
             }
           ></Route>
         </Routes>
-        {controlsVisible === true && (
-          <Link
-            to="/scoreboard"
-            className="display-link"
-            onClick={handleControlsVisible}
-          >
-            Display
-          </Link>
-        )}
-
-        {controlsVisible === false && (
-          <Link to="/" onClick={handleControlsVisible}>
-            Controls
-          </Link>
-        )}
       </Router>
     </div>
   );

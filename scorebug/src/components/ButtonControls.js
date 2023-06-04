@@ -22,6 +22,7 @@ const ButtonControls = ({
   handleNextDown,
   handleFirstDown,
   handlePossesionChange,
+
 }) => {
   return (
     <>
@@ -59,7 +60,7 @@ const ButtonControls = ({
         <Button
           variant="contained"
           onClick={handleAddPoints}
-          sx={{ mr: "50px" }}
+          sx={{ ml: "20px", maxWidth: "150px"}}
         >
           Goal
         </Button>

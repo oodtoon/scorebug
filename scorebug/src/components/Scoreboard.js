@@ -3,10 +3,14 @@ import Countdown from "./Countdown";
 import OutsBallsAndStrikes from "./Outs";
 import Downs from "./Downs";
 import SportsFootballIcon from "@mui/icons-material/SportsFootball";
+import "../App.css";
+import { Link } from "react-router-dom";
 
 const FootballIcon = () => (
-  <SportsFootballIcon sx={{ mb: "-10px" }}></SportsFootballIcon>
-)
+  <span className="football">
+    <SportsFootballIcon sx={{ mb: "-10px" }}></SportsFootballIcon>
+  </span>
+);
 
 const Scoreboard = ({
   scorebug,
@@ -20,20 +24,40 @@ const Scoreboard = ({
   down,
   possesion,
   timeLeft,
+  controlsVisible,
   setTimeLeft,
+  handleControlsVisible,
 }) => {
   return (
-    <div style={{ width: "50%" }}>
+    <div>
       <Box
         sx={{
           display: "grid",
           gap: 1,
-          gridTemplateColumns: "repeat(2, 1fr)",
+          gridTemplateColumns: "2fr 1fr 1fr",
         }}
       >
-        <Box sx={{ bgcolor: "error.main", color: "error.contrastText", p: 2, justifyContent: 'space-evenly' }}>
+        <Box
+          sx={{
+            bgcolor: "error.main",
+            color: "error.contrastText",
+            p: 2,
+            justifyContent: "space-evenly",
+          }}
+        >
           {scorebug.awayTeam}
-          {scorebug.sport === "Football" && (possesion === "Away Team" ? FootballIcon() : null)}
+        </Box>
+        <Box
+          sx={{
+            bgcolor: "error.main",
+            color: "error.contrastText",
+            p: 2,
+            justifyContent: "space-evenly",
+            ml: "-10px",
+          }}
+        >
+          {scorebug.sport === "Football" &&
+            (possesion === "Away Team" ? FootballIcon() : null)}
         </Box>
         <Box sx={{ bgcolor: "white", color: "black", p: 2 }}>{awayScore}</Box>
         <Box
@@ -41,11 +65,22 @@ const Scoreboard = ({
             bgcolor: "primary.main",
             color: "primary.contrastText",
             p: 2,
-            justifyContent: 'space-evenly'
+            justifyContent: "space-evenly",
           }}
         >
           {scorebug.homeTeam}
-          {scorebug.sport === "Football" && (possesion === "Home Team" ? FootballIcon() : null)}
+        </Box>
+        <Box
+          sx={{
+            bgcolor: "primary.main",
+            color: "primary.contrastText",
+            p: 2,
+            justifyContent: "space-evenly",
+            ml: "-10px",
+          }}
+        >
+          {scorebug.sport === "Football" &&
+            (possesion === "Home Team" ? FootballIcon() : null)}
         </Box>
         <Box
           sx={{
@@ -63,19 +98,20 @@ const Scoreboard = ({
             gridTemplateColumns: "repeat(3, 1fr)",
           }}
         >
-          <Box sx={{ bgcolor: "white", color: "black", p: 2 }}>
+          <Box sx={{ bgcolor: "white", color: "black", p: 2, borderRadius: "8px" }}>
             {scorebug.playPeriodType}
           </Box>
           <Box sx={{ bgcolor: "white", color: "black", p: 2 }}>
             {playPeriod}
           </Box>
-          <Box sx={{ bgcolor: "white", color: "black", p: 2 }}>
-            {scorebug.sport !== "Baseball" && (
+          <Box sx={{ bgcolor: "white", color: "black", pt: 2 }}>
+            {scorebug.sport !== "Baseball" && scorebug.sport !== "Pool" && (
               <Countdown
                 periodLength={scorebug.periodLength}
                 isPaused={isPaused}
                 timeLeft={timeLeft}
                 setTimeLeft={setTimeLeft}
+                playPeriod={playPeriod}
               />
             )}
             {scorebug.sport === "Baseball" && (
@@ -85,9 +121,28 @@ const Scoreboard = ({
                 strikes={strikes}
               />
             )}
+            {scorebug.sport === "Pool" && <span>{scorebug.poolType}</span>}
           </Box>
         </Box>
-        {scorebug.sport === "Football" && <Downs down={down} />}
+        <Box sx={{ p: 2 }}>
+          {scorebug.sport === "Football" && <Downs down={down} />}
+        </Box>
+        {controlsVisible && (
+          <Box sx={{ p: 2 }}>
+            {" "}
+            {controlsVisible === true && (
+              <div className="display-link">
+                <Link
+                  to="/scoreboard"
+                  className="display-link"
+                  onClick={handleControlsVisible}
+                >
+                  Display
+                </Link>
+              </div>
+            )}
+          </Box>
+        )}
       </Box>
     </div>
   );

@@ -8,7 +8,7 @@ const useCountdown = (timeLeft, setTimeLeft, time, isPaused) => {
   }, [time]);
 
   useEffect(() => {
-    if (!isPaused && timeLeft !== 0) {
+    if (!isPaused && timeLeft >= 0) {
       timeRef.current = setTimeout(() => {
         setTimeLeft((t) => t - .1);
       }, 100);
